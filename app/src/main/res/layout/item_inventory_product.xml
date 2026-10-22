@@ -52,13 +52,14 @@
 
         <Button
             android:id="@+id/btn_inv_edit"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/button_chip"
-            android:minHeight="0dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/button_tonal"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
             android:padding="0dp"
             android:text="✏️"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <View
@@ -66,7 +67,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="#F1F5F9" />
+        android:background="@color/colorDivider" />
 
     <!-- BOTTOM ROW: PRICES & QUICK RESTOCK -->
     <LinearLayout
@@ -112,26 +113,43 @@
         <Button
             android:id="@+id/btn_inv_restock_5"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/button_chip"
-            android:minHeight="0dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/button_tonal"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:text="+5"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_inv_restock_10"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:background="@drawable/button_chip"
-            android:minHeight="0dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/button_tonal"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:text="+10"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_inv_restock_more"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/button_outlined"
+            android:minHeight="48dp"
+            android:minWidth="48dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="+More"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="11sp"
             android:textStyle="bold" />

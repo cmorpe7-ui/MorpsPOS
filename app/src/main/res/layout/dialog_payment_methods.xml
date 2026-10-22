@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Payment Methods Accepted"
+        android:textColor="@color/colorTextDark"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="14dp"
+        android:text="Cash is always accepted. Select which optional payment methods your store accepts:"
+        android:textColor="@color/colorTextMuted"
+        android:textSize="12sp" />
+
+    <CheckBox
+        android:id="@+id/check_pm_gcash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="📱 GCash (Digital Wallet)"
+        android:textColor="@color/colorTextDark"
+        android:textSize="13sp" />
+
+    <CheckBox
+        android:id="@+id/check_pm_credit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:checked="true"
+        android:text="📝 Store Credit (Utang / Listahan)"
+        android:textColor="@color/colorTextDark"
+        android:textSize="13sp" />
+</LinearLayout>

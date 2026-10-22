@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorSurface"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- DIALOG TITLE -->
+        <TextView
+            android:id="@+id/text_dialog_gcash_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📱 Record GCash Transaction"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <!-- TRANSACTION TYPE SELECTOR -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transaction Type:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup_gcash_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_gcash_cash_in"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="➕ Cash-In (Outflow)"
+                android:textColor="@color/colorTextDark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/radio_gcash_cash_out"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="➖ Cash-Out (Inflow)"
+                android:textColor="@color/colorTextDark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <!-- ========================================================================= -->
+        <!-- SMART AUTO-FILL HELPERS (NO MANUAL TYPING)                                -->
+        <!-- ========================================================================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/card_tonal"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="⚡ Quick Auto-Fill"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/badge_blue"
+                    android:paddingStart="6dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="6dp"
+                    android:paddingBottom="2dp"
+                    android:text="100% Offline AI"
+                    android:textColor="@color/colorBadgeBlueText"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <!-- 1. SCAN SCREEN / RECEIPT / QR -->
+                <Button
+                    android:id="@+id/btn_gcash_scan_screen"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_primary"
+                    android:minHeight="40dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="📸 Scan"
+                    android:textColor="@color/colorOnPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <!-- 2. PASTE FROM SMS / CLIPBOARD -->
+                <Button
+                    android:id="@+id/btn_gcash_paste_sms"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_accent"
+                    android:minHeight="40dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="📋 Paste SMS"
+                    android:textColor="@color/colorOnPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <!-- 3. RECENT CUSTOMERS -->
+                <Button
+                    android:id="@+id/btn_gcash_recent_customers"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="40dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="👥 Recent"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- DETECTED CONFIRMATION / PREVIEW CARD (Hidden by default, shown when auto-filled) -->
+            <LinearLayout
+                android:id="@+id/layout_gcash_autofill_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/card_background"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_gcash_autofill_badge"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="✨ Auto-Filled from Screen"
+                        android:textColor="@color/colorSuccess"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btn_gcash_autofill_dismiss"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="✕ Dismiss"
+                        android:textColor="@color/colorTextMuted"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_gcash_autofill_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Mobile: 0917-123-4567 • Amount: ₱1,000.00"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CUSTOMER MOBILE NUMBER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Customer GCash Mobile Number: *"
+                android:textColor="@color/colorTextDark"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_dialog_gcash_number_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 / 11 digits"
+                android:textColor="@color/colorTextMuted"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edit_dialog_gcash_number"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edittext_border"
+            android:digits="0123456789"
+            android:hint="09XXXXXXXXX (11 digits)"
+            android:inputType="phone"
+            android:letterSpacing="0.04"
+            android:maxLength="11"
+            android:minHeight="48dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_dialog_gcash_number_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Format: 09XXXXXXXXX (Exact 11 digits required)"
+            android:textColor="@color/colorTextMuted"
+            android:textSize="11sp" />
+
+        <!-- CUSTOMER NAME -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Customer Name (Optional):"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_dialog_gcash_name"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Juan Dela Cruz"
+            android:inputType="textPersonName|textCapWords"
+            android:minHeight="48dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
+
+        <!-- AMOUNT -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Amount (₱):"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_dialog_gcash_amount"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edittext_border"
+            android:hint="0.00"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_dialog_gcash_amount_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/colorTextMuted"
+            android:textSize="11sp"
+            android:text="Remittance amount must be greater than ₱0.00" />
+
+        <!-- QUICK AMOUNT CHIPS -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/chip_amt_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="36dp"
+                    android:text="₱100"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/chip_amt_200"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="36dp"
+                    android:text="₱200"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/chip_amt_500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="36dp"
+                    android:text="₱500"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/chip_amt_1000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="36dp"
+                    android:text="₱1,000"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/chip_amt_2000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="36dp"
+                    android:text="₱2,000"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/chip_amt_5000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="36dp"
+                    android:text="₱5,000"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- SERVICE FEE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Service / Convenience Fee (₱):"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_dialog_gcash_fee"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edittext_border"
+            android:hint="15.00"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
+
+        <!-- QUICK FEE CHIPS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/chip_fee_free"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="36dp"
+                android:text="₱0"
+                android:textColor="@color/colorTextDark"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/chip_fee_10"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="36dp"
+                android:text="₱10"
+                android:textColor="@color/colorTextDark"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/chip_fee_15"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="36dp"
+                android:text="₱15"
+                android:textColor="@color/colorTextDark"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/chip_fee_20"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="36dp"
+                android:text="₱20"
+                android:textColor="@color/colorTextDark"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/chip_fee_30"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="36dp"
+                android:text="₱30"
+                android:textColor="@color/colorTextDark"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- LIVE CASH SUMMARY CALLOUT -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/badge_green"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/text_dialog_gcash_summary_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💵 Customer Pays (Physical Cash):"
+                android:textColor="@color/colorBadgeGreenText"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_dialog_gcash_summary_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="₱0.00 (Amount + Fee)"
+                android:textColor="@color/colorBadgeGreenText"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- GCASH REFERENCE NUMBER -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="GCash Ref # (from SMS/receipt):"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_dialog_gcash_ref_no"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. 1002938475"
+            android:inputType="textCapCharacters"
+            android:minHeight="48dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
+
+        <!-- NOTE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Note / Remarks (Optional):"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_dialog_gcash_note"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Tuition fee send / electric bill"
+            android:inputType="textCapSentences"
+            android:minHeight="48dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="13sp" />
+
+        <!-- AUTO-PRINT CHECKBOX -->
+        <CheckBox
+            android:id="@+id/check_dialog_gcash_autoprint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:checked="true"
+            android:minHeight="48dp"
+            android:text="🖨️ Print receipt slip automatically on save"
+            android:textColor="@color/colorTextDark"
+            android:textSize="12sp" />
+
+        <!-- ACTION BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_dialog_gcash_cancel"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_tonal"
+                android:minHeight="48dp"
+                android:text="Cancel"
+                android:textColor="@color/colorTextDark"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btn_dialog_gcash_save"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1.6"
+                android:background="@drawable/button_primary"
+                android:minHeight="48dp"
+                android:text="💾 Save &amp; Record"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

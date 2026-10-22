@@ -1,22 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1B5E20</color>
-    <color name="colorPrimaryDark">#0E3812</color>
-    <color name="colorAccent">#FF8F00</color>
-    <color name="colorGcash">#005CEE</color>
-    <color name="colorBackground">#F1F5F9</color>
+    <!-- ========================================================================= -->
+    <!-- MONOCHROME SLATE PALETTE WITH SINGLE ACCENT (MATERIAL 3 COLOR ROLES)       -->
+    <!-- ========================================================================= -->
+
+    <!-- Single Accent Color: Emerald Slate -->
+    <color name="colorPrimary">#059669</color>
+    <color name="colorPrimaryDark">#064E3B</color>
+    <color name="colorPrimaryLight">#10B981</color>
+    <color name="colorPrimaryContainer">#ECFDF5</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnPrimaryContainer">#065F46</color>
+
+    <!-- Monochrome Slate Scale -->
+    <color name="colorSlate900">#0F172A</color>
+    <color name="colorSlate800">#1E293B</color>
+    <color name="colorSlate700">#334155</color>
+    <color name="colorSlate600">#475569</color>
+    <color name="colorSlate500">#64748B</color>
+    <color name="colorSlate400">#94A3B8</color>
+    <color name="colorSlate300">#CBD5E1</color>
+    <color name="colorSlate200">#E2E8F0</color>
+    <color name="colorSlate100">#F1F5F9</color>
+    <color name="colorSlate50">#F8FAFC</color>
+
+    <!-- Material 3 Mapped Roles -->
+    <color name="md_theme_primary">#059669</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#ECFDF5</color>
+    <color name="md_theme_onPrimaryContainer">#065F46</color>
+
+    <color name="md_theme_secondary">#334155</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#F1F5F9</color>
+    <color name="md_theme_onSecondaryContainer">#1E293B</color>
+
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_onSurface">#0F172A</color>
+    <color name="md_theme_surfaceVariant">#F1F5F9</color>
+    <color name="md_theme_onSurfaceVariant">#475569</color>
+
+    <color name="md_theme_background">#F8FAFC</color>
+    <color name="md_theme_onBackground">#0F172A</color>
+
+    <color name="md_theme_outline">#E2E8F0</color>
+    <color name="md_theme_outlineVariant">#F1F5F9</color>
+
+    <color name="md_theme_error">#DC2626</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_errorContainer">#FEF2F2</color>
+    <color name="md_theme_onErrorContainer">#991B1B</color>
+
+    <!-- Legacy & Semantic Compatibility Mappings -->
+    <color name="colorBackground">#F8FAFC</color>
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorCardBorder">#E2E8F0</color>
-    <color name="colorTextDark">#1E293B</color>
+    <color name="colorDivider">#E2E8F0</color>
+    <color name="colorTabBackground">#F1F5F9</color>
+    <color name="colorSurfaceVariant">#F1F5F9</color>
+
+    <!-- Typography (Slate Scale) -->
+    <color name="colorTextDark">#0F172A</color>
     <color name="colorTextMuted">#64748B</color>
-    <color name="colorDanger">#EF4444</color>
-    <color name="colorWarning">#F59E0B</color>
-    <color name="colorSuccess">#10B981</color>
-    <color name="colorBadgeGreen">#DCFCE7</color>
-    <color name="colorBadgeGreenText">#166534</color>
-    <color name="colorBadgeOrange">#FEF3C7</color>
+    <color name="colorTextLight">#94A3B8</color>
+
+    <!-- Accent & Payments -->
+    <color name="colorAccent">#334155</color>
+    <color name="colorAccentDark">#1E293B</color>
+    <color name="colorAccentContainer">#F1F5F9</color>
+    <color name="colorGcash">#1E40AF</color>
+    <color name="colorGcashLight">#EFF6FF</color>
+    <color name="colorCredit">#DC2626</color>
+
+    <!-- Status & Alerts (Muted, Not Neon) -->
+    <color name="colorDanger">#DC2626</color>
+    <color name="colorWarning">#D97706</color>
+    <color name="colorSuccess">#059669</color>
+
+    <!-- Chips & Badges -->
+    <color name="colorBadgeGreen">#ECFDF5</color>
+    <color name="colorBadgeGreenText">#065F46</color>
+    <color name="colorBadgeOrange">#FFFBEB</color>
     <color name="colorBadgeOrangeText">#92400E</color>
-    <color name="colorBadgeRed">#FEE2E2</color>
+    <color name="colorBadgeRed">#FEF2F2</color>
     <color name="colorBadgeRedText">#991B1B</color>
-    <color name="colorTabBackground">#E2E8F0</color>
+    <color name="colorBadgeBlue">#EFF6FF</color>
+    <color name="colorBadgeBlueText">#1E40AF</color>
 </resources>

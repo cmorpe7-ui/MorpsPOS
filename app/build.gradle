@@ -1,23 +1,42 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'com.dantsu.thermalprinter'
     compileSdkVersion 33
+
     defaultConfig {
-        applicationId "com.dantsu.thermalprinter"
-        minSdkVersion 16
+        applicationId "com.morps.pos"
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        release {
+            storeFile file('morps-release.jks')
+            storePassword 'morpspos2026'
+            keyAlias 'morps'
+            keyPassword 'morpspos2026'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -29,4 +48,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation project(path: ':escposprinter')
+
+    // ZXing for QR Code scanning and decoding
+    implementation 'com.google.zxing:core:3.5.0'
+
+    // Google ML Kit On-Device Vision (Image Labeling & Text Recognition)
+    implementation 'com.google.mlkit:image-labeling:17.0.8'
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
 }

@@ -37,7 +37,7 @@
                         android:id="@+id/text_main_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Morps POS 🛒"
+                        android:text="Morps POS"
                         android:textColor="@color/colorPrimary"
                         android:textSize="22sp"
                         android:textStyle="bold" />
@@ -55,12 +55,13 @@
                 <Button
                     android:id="@+id/button_customize_receipt"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:background="@drawable/button_chip"
-                    android:minHeight="0dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="⚙️ Customize"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:text="⚙️ Settings"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -71,7 +72,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="#EEEEEE" />
+                android:background="@color/colorDivider" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,11 +92,12 @@
                 <Button
                     android:id="@+id/button_bluetooth_browse"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:background="@drawable/button_chip"
-                    android:minHeight="0dp"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
                     android:text="Select Printer"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="12sp" />
@@ -105,21 +107,21 @@
         <!-- NAVIGATION TABS: POS vs INVENTORY -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="48dp"
             android:layout_marginTop="12dp"
-            android:background="@drawable/card_background"
+            android:background="@drawable/button_chip"
             android:orientation="horizontal"
-            android:padding="3dp">
+            android:padding="4dp">
 
             <Button
                 android:id="@+id/tab_pos"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/button_primary"
-                android:minHeight="0dp"
+                android:background="@drawable/tab_pill_active"
+                android:minHeight="48dp"
                 android:text="🛒 POS"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/colorOnPrimary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
 
@@ -128,8 +130,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:minHeight="0dp"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="48dp"
                 android:text="📦 Stocks"
                 android:textColor="@color/colorTextDark"
                 android:textSize="11sp"
@@ -140,9 +142,21 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:minHeight="0dp"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="48dp"
                 android:text="📊 Sales"
+                android:textColor="@color/colorTextDark"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/tab_gcash"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/tab_pill_inactive"
+                android:minHeight="48dp"
+                android:text="📱 GCash"
                 android:textColor="@color/colorTextDark"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -197,7 +211,7 @@
                 <EditText
                     android:id="@+id/edit_pos_search"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="48dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/edittext_border"
                     android:drawableStart="@android:drawable/ic_menu_search"
@@ -234,14 +248,7 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="8dp"
-                    android:background="#EEEEEE" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Or add unlisted / tingi item:"
-                    android:textColor="@color/colorTextMuted"
-                    android:textSize="12sp" />
+                    android:background="@color/colorDivider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -253,7 +260,7 @@
                     <EditText
                         android:id="@+id/edittext_custom_name"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="48dp"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1.6"
                         android:background="@drawable/edittext_border"
@@ -264,7 +271,7 @@
                     <EditText
                         android:id="@+id/edittext_custom_price"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="48dp"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         android:background="@drawable/edittext_border"
@@ -275,14 +282,16 @@
                     <Button
                         android:id="@+id/button_add_custom"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:background="@drawable/button_accent"
-                        android:minHeight="0dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="14dp"
+                        android:paddingRight="14dp"
                         android:text="+ Add"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -310,15 +319,77 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <Button
-                        android:id="@+id/button_clear_cart"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@android:color/transparent"
-                        android:minHeight="0dp"
-                        android:text="Clear Cart"
-                        android:textColor="@color/colorDanger"
-                        android:textSize="12sp" />
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/button_hold_cart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginEnd="4dp"
+                            android:background="@drawable/button_tonal"
+                            android:minHeight="48dp"
+                            android:minWidth="48dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="⏸️ Hold"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/button_clear_cart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:background="@android:color/transparent"
+                            android:minHeight="48dp"
+                            android:minWidth="48dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:text="Clear Cart"
+                            android:textColor="@color/colorDanger"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Parked Cart Resume Banner -->
+                <LinearLayout
+                    android:id="@+id/banner_parked_cart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="6dp"
+                    android:background="@drawable/badge_orange"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/text_parked_cart_summary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="⏸️ 1 Parked Order on hold"
+                        android:textColor="@color/colorBadgeOrangeText"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btn_resume_parked_cart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="48dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:text="Resume Cart"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <TextView
@@ -344,7 +415,9 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="#DDDDDD" />
+                    android:background="@color/colorDivider" />
+
+
 
                 <!-- Total Amount Row -->
                 <LinearLayout
@@ -382,13 +455,35 @@
                 android:orientation="vertical"
                 android:padding="14dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Payment Method"
-                    android:textColor="@color/colorTextDark"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Payment Method"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btn_edit_payment_methods"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:text="⚙️ Options"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <RadioGroup
                     android:id="@+id/radiogroup_payment"
@@ -403,6 +498,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:checked="true"
+                        android:minHeight="48dp"
                         android:text="💵 Cash"
                         android:textSize="13sp" />
 
@@ -411,6 +507,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:minHeight="48dp"
                         android:text="📱 GCash"
                         android:textSize="13sp" />
 
@@ -419,6 +516,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:minHeight="48dp"
                         android:text="📝 Store Credit"
                         android:textSize="13sp" />
                 </RadioGroup>
@@ -427,31 +525,33 @@
                 <LinearLayout
                     android:id="@+id/layout_quick_cash_chips"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/chip_cash_exact"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/button_chip"
-                        android:minHeight="0dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
                         android:text="Exact"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="10sp"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/chip_cash_50"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/button_chip"
-                        android:minHeight="0dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
                         android:text="₱50"
                         android:textColor="@color/colorTextDark"
                         android:textSize="11sp" />
@@ -459,23 +559,38 @@
                     <Button
                         android:id="@+id/chip_cash_100"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/button_chip"
-                        android:minHeight="0dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
                         android:text="₱100"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="11sp" />
+
+                    <Button
+                        android:id="@+id/chip_cash_200"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_chip"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:text="₱200"
                         android:textColor="@color/colorTextDark"
                         android:textSize="11sp" />
 
                     <Button
                         android:id="@+id/chip_cash_500"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
-                        android:layout_marginEnd="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:background="@drawable/button_chip"
-                        android:minHeight="0dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
                         android:text="₱500"
                         android:textColor="@color/colorTextDark"
                         android:textSize="11sp" />
@@ -483,10 +598,11 @@
                     <Button
                         android:id="@+id/chip_cash_1000"
                         android:layout_width="0dp"
-                        android:layout_height="32dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@drawable/button_chip"
-                        android:minHeight="0dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
                         android:text="₱1000"
                         android:textColor="@color/colorTextDark"
                         android:textSize="11sp" />
@@ -512,7 +628,7 @@
                     <EditText
                         android:id="@+id/edittext_cash_tendered"
                         android:layout_width="110dp"
-                        android:layout_height="40dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/edittext_border"
                         android:hint="₱ 0.00"
                         android:inputType="numberDecimal"
@@ -534,7 +650,7 @@
                 <EditText
                     android:id="@+id/edittext_customer_note"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="48dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/edittext_border"
                     android:hint="Customer Name / GCash Ref (Optional)"
@@ -553,24 +669,28 @@
                 <Button
                     android:id="@+id/button_preview_receipt"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_height="48dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_accent"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
                     android:text="👁️ Preview Receipt"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/colorTextDark"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
+                <!-- Primary Action: COMPLETE / NEW SALE -->
                 <Button
-                    android:id="@+id/button_bluetooth"
+                    android:id="@+id/button_new_sale"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:background="@drawable/button_primary"
-                    android:text="🖨️ PRINT RECEIPT (Bluetooth 58mm)"
-                    android:textColor="#FFFFFF"
+                    android:minHeight="48dp"
+                    android:text="✨ COMPLETE / NEW SALE"
+                    android:textColor="@color/colorOnPrimary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
+                <!-- Secondary Actions: Thermal Printing Options -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -578,23 +698,28 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/button_usb"
+                        android:id="@+id/button_bluetooth"
                         android:layout_width="0dp"
-                        android:layout_height="44dp"
-                        android:layout_marginEnd="6dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/button_chip"
-                        android:text="🔌 Print via USB"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="12sp" />
+                        android:background="@drawable/button_outlined"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:text="🖨️ Print Receipt (BT)"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/button_new_sale"
+                        android:id="@+id/button_usb"
                         android:layout_width="0dp"
-                        android:layout_height="44dp"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:background="@drawable/button_chip"
-                        android:text="✨ Complete / New Sale"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:text="🔌 Print via USB"
                         android:textColor="@color/colorTextDark"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -731,7 +856,7 @@
                 <EditText
                     android:id="@+id/edit_inventory_search"
                     android:layout_width="0dp"
-                    android:layout_height="44dp"
+                    android:layout_height="48dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/edittext_border"
@@ -742,17 +867,106 @@
                     android:textSize="13sp" />
 
                 <Button
+                    android:id="@+id/btn_inventory_scan_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/button_outlined"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:text="📷 AI Scan"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <Button
                     android:id="@+id/btn_inventory_add"
                     android:layout_width="wrap_content"
-                    android:layout_height="44dp"
+                    android:layout_height="48dp"
                     android:background="@drawable/button_primary"
-                    android:paddingLeft="14dp"
-                    android:paddingRight="14dp"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
                     android:text="+ Add Item"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/colorOnPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_inventory_export"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:text="📤 Export CSV"
+                    android:textColor="@color/colorTextDark"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
+
+            <!-- INVENTORY STOCK FILTER CHIPS -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/chip_inv_filter_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/tab_pill_active"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="All Products"
+                        android:textColor="@color/colorOnPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_inv_filter_low"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/button_chip"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="⚠️ Low Stock"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/chip_inv_filter_out"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/button_chip"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:text="❌ Out of Stock"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </HorizontalScrollView>
 
             <!-- DYNAMIC INVENTORY LIST CONTAINER -->
             <LinearLayout
@@ -765,7 +979,7 @@
         </LinearLayout>
 
         <!-- ========================================================================= -->
-        <!-- VIEW 3: SALES HISTORY & DAILY Z-REPORT TAB -->
+        <!-- VIEW 3: SALES HISTORY & ADVANCED ANALYTICS TAB -->
         <!-- ========================================================================= -->
         <LinearLayout
             android:id="@+id/layout_sales_view"
@@ -774,11 +988,100 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <!-- TODAY'S SALES & CASH FLOW METRICS CARD -->
-            <LinearLayout
+            <!-- TIME-RANGE FILTER CHIPS -->
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/layout_sales_time_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/chip_sales_today"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/tab_pill_active"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="14dp"
+                        android:paddingRight="14dp"
+                        android:text="Today"
+                        android:textColor="@color/colorOnPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_sales_yesterday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="14dp"
+                        android:paddingRight="14dp"
+                        android:text="Yesterday"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_sales_7days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="14dp"
+                        android:paddingRight="14dp"
+                        android:text="7 Days"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_sales_30days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="14dp"
+                        android:paddingRight="14dp"
+                        android:text="This Month"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_sales_all_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:paddingLeft="14dp"
+                        android:paddingRight="14dp"
+                        android:text="All Time"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- PERFORMANCE OVERVIEW CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/card_background"
                 android:orientation="vertical"
                 android:padding="14dp">
@@ -793,7 +1096,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Today's Performance"
+                        android:text="🏪 Store Merchandise Sales"
                         android:textColor="@color/colorTextDark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -813,7 +1116,7 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Primary Revenue Row -->
+                <!-- Gross Revenue & Net Profit -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -836,17 +1139,21 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/text_sales_net_profit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Total Gross Sales"
-                            android:textColor="@color/colorTextMuted"
-                            android:textSize="11sp" />
+                            android:layout_marginTop="2dp"
+                            android:text="Profit: +₱0.00 (0.0%)"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.8"
+                        android:gravity="end"
                         android:orientation="vertical">
 
                         <TextView
@@ -861,20 +1168,46 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Transactions"
+                            android:text="Orders Completed"
                             android:textColor="@color/colorTextMuted"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <View
+                <!-- Slim Multi-Segment Payment Share Bar -->
+                <LinearLayout
+                    android:id="@+id/layout_sales_share_bar"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="#F1F5F9" />
+                    android:layout_height="6dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/segment_bar_bg"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
 
-                <!-- Payment Breakdowns -->
+                    <View
+                        android:id="@+id/bar_segment_cash"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="70"
+                        android:background="@color/colorPrimary" />
+
+                    <View
+                        android:id="@+id/bar_segment_gcash"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="20"
+                        android:background="@color/colorGcash" />
+
+                    <View
+                        android:id="@+id/bar_segment_credit"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="10"
+                        android:background="@color/colorCredit" />
+                </LinearLayout>
+
+                <!-- Payment Breakdown Values -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -892,7 +1225,7 @@
                             android:layout_height="wrap_content"
                             android:text="₱0.00"
                             android:textColor="@color/colorSuccess"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -915,7 +1248,7 @@
                             android:layout_height="wrap_content"
                             android:text="₱0.00"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -938,62 +1271,406 @@
                             android:layout_height="wrap_content"
                             android:text="₱0.00"
                             android:textColor="@color/colorDanger"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📝 Unpaid Utang"
+                            android:textColor="@color/colorTextMuted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Actions: Reports & CSV Export -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_print_z_report"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1.2"
+                        android:background="@drawable/button_primary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:text="📊 Daily Sales Summary"
+                        android:textColor="@color/colorOnPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btn_sales_export"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:text="📤 Export CSV"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btn_sales_manage_history"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:padding="0dp"
+                        android:text="🗑️"
+                        android:textColor="@color/colorDanger"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- GCASH REMITTANCE OVERVIEW CARD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/card_background"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📱 GCash Remittance Services"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btn_goto_gcash_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/badge_blue"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="View Full Ledger ➔"
+                        android:textColor="@color/colorBadgeBlueText"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_sales_gcash_fees"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+₱0.00"
+                            android:textColor="@color/colorSuccess"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Service Fees Earned (Profit)"
+                            android:textColor="@color/colorTextMuted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_sales_gcash_tx_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 txns"
+                            android:textColor="@color/colorTextDark"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cash In / Out Orders"
+                            android:textColor="@color/colorTextMuted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorDivider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_sales_gcash_cashin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₱0.00"
+                            android:textColor="@color/colorSuccess"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📝 Unpaid Credit"
+                            android:text="📥 Cash In Handled"
+                            android:textColor="@color/colorTextMuted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_sales_gcash_cashout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₱0.00"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📤 Cash Out Handled"
                             android:textColor="@color/colorTextMuted"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
-
-                <!-- PRINT DAILY Z-REPORT BUTTON -->
-                <Button
-                    android:id="@+id/btn_print_z_report"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/button_accent"
-                    android:text="🖨️ Print Daily Z-Report (58mm)"
-                    android:textColor="#FFFFFF"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- SALES FILTER BAR -->
+            <!-- CASH DRAWER RECONCILIATION CARD -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp"
+                android:background="@drawable/card_tonal"
+                android:orientation="vertical"
+                android:padding="14dp">
 
-                <RadioGroup
-                    android:id="@+id/radiogroup_sales_filter"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/radio_filter_all_sales"
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:checked="true"
-                        android:text="All Sales"
-                        android:textSize="13sp" />
+                        android:text="💵 Total Physical Cash in Drawer"
+                        android:textColor="@color/colorSlate900"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/radio_filter_unpaid_credit"
+                    <TextView
+                        android:id="@+id/text_sales_expected_drawer_cash"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₱0.00"
+                        android:textColor="@color/colorSlate900"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_sales_drawer_calc_breakdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="Store Cash (₱0.00) + Cash-In (₱0.00) - Cash-Out (₱0.00)"
+                    android:textColor="@color/colorTextMuted"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- TOP 5 BEST-SELLERS CARD -->
+            <LinearLayout
+                android:id="@+id/layout_sales_top_sellers_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/card_background"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
-                        android:text="Unpaid Credit Only"
-                        android:textSize="13sp" />
-                </RadioGroup>
+                        android:layout_weight="1"
+                        android:text="🏆 Top Best-Selling Items"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_top_sellers_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Top 5 Items"
+                        android:textColor="@color/colorTextMuted"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_top_sellers_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <!-- CUSTOMER UTANG LEDGER SUMMARY (Shown when Unpaid Utang is selected) -->
+            <LinearLayout
+                android:id="@+id/layout_debtors_summary_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/card_background"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="👥 Customer Utang Ledger"
+                    android:textColor="@color/colorDanger"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/container_debtors_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </LinearLayout>
+
+            <!-- SALES SEARCH BAR -->
+            <EditText
+                android:id="@+id/edit_sales_search"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/edittext_border"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="8dp"
+                android:hint="Search receipt #, customer name, note..."
+                android:inputType="text"
+                android:textSize="13sp" />
+
+            <!-- PAYMENT FILTER SEGMENTED BUTTONS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_chip"
+                android:orientation="horizontal"
+                android:padding="3dp">
+
+                <Button
+                    android:id="@+id/filter_sales_all"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_pill_active"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:text="All"
+                    android:textColor="@color/colorOnPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/filter_sales_cash"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:text="Cash"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/filter_sales_gcash"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:text="GCash"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/filter_sales_utang"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.2"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:text="Unpaid Utang"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <TextView
@@ -1018,5 +1695,399 @@
                 android:orientation="vertical" />
         </LinearLayout>
 
+        <!-- ========================================================================= -->
+        <!-- VIEW 4: GCASH CASH-IN & CASH-OUT INVENTORY / LEDGER TAB                   -->
+        <!-- ========================================================================= -->
+        <LinearLayout
+            android:id="@+id/layout_gcash_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- SECTION HEADER -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📱 GCash Cash-In &amp; Cash-Out"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_gcash_adjust_float"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="40dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="💰 Adjust Float"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- FLOAT & DRAWER OVERVIEW CARDS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- CARD 1: DIGITAL WALLET FLOAT -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/card_background"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="DIGITAL WALLET FLOAT"
+                        android:textColor="@color/colorGcash"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_gcash_digital_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="₱10,000.00"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_gcash_digital_flow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Base: ₱10,000.00"
+                        android:textColor="@color/colorTextMuted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <!-- CARD 2: PHYSICAL CASH DRAWER & PROFIT -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/card_background"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FEES EARNED (PROFIT)"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_gcash_fees_profit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="+₱0.00"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_gcash_drawer_flow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Cash Drawer: ₱0.00"
+                        android:textColor="@color/colorTextMuted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- PRIMARY ACTION BUTTONS: CASH IN & CASH OUT -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_gcash_new_cash_in"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_primary"
+                    android:minHeight="48dp"
+                    android:text="➕ Cash-In (Outflow)"
+                    android:textColor="@color/colorOnPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_gcash_new_cash_out"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
+                    android:text="➖ Cash-Out (Inflow)"
+                    android:textColor="@color/colorGcash"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- SECONDARY UTILITY BUTTONS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_gcash_export_csv"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
+                    android:text="📊 Export CSV"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_gcash_manage_history"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_outlined"
+                    android:minHeight="48dp"
+                    android:text="🗑️ Manage Ledger"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- PERIOD FILTER CHIPS -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_chip"
+                    android:orientation="horizontal"
+                    android:padding="3dp">
+
+                    <Button
+                        android:id="@+id/chip_gcash_today"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/tab_pill_active"
+                        android:minHeight="34dp"
+                        android:minWidth="60dp"
+                        android:text="Today"
+                        android:textColor="@color/colorOnPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_gcash_yesterday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="34dp"
+                        android:minWidth="60dp"
+                        android:text="Yesterday"
+                        android:textColor="@color/colorSlate600"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_gcash_7days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="34dp"
+                        android:minWidth="60dp"
+                        android:text="7 Days"
+                        android:textColor="@color/colorSlate600"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_gcash_30days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="34dp"
+                        android:minWidth="60dp"
+                        android:text="This Month"
+                        android:textColor="@color/colorSlate600"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chip_gcash_alltime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/tab_pill_inactive"
+                        android:minHeight="34dp"
+                        android:minWidth="60dp"
+                        android:text="All Time"
+                        android:textColor="@color/colorSlate600"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- TYPE FILTER (ALL vs CASH-IN vs CASH-OUT) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_chip"
+                android:orientation="horizontal"
+                android:padding="3dp">
+
+                <Button
+                    android:id="@+id/filter_gcash_all"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_pill_active"
+                    android:minHeight="34dp"
+                    android:text="All"
+                    android:textColor="@color/colorOnPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/filter_gcash_in"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="34dp"
+                    android:text="Cash-In Only"
+                    android:textColor="@color/colorSlate600"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/filter_gcash_out"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_pill_inactive"
+                    android:minHeight="34dp"
+                    android:text="Cash-Out Only"
+                    android:textColor="@color/colorSlate600"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- SEARCH BAR -->
+            <EditText
+                android:id="@+id/edit_gcash_search"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittext_border"
+                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawablePadding="8dp"
+                android:hint="Search mobile (09XX), name, or Ref #..."
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="13sp" />
+
+            <!-- SUMMARY STATS CHIPS FOR PERIOD -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/text_gcash_stat_cash_in"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cash-In: ₱0.00 (0)"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_gcash_stat_cash_out"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cash-Out: ₱0.00 (0)"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_gcash_stat_fees"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profit: +₱0.00"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- EMPTY STATE -->
+            <TextView
+                android:id="@+id/text_gcash_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="No GCash transactions recorded yet."
+                android:textColor="@color/colorTextMuted"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <!-- DYNAMIC GCASH LEDGER ITEMS CONTAINER -->
+            <LinearLayout
+                android:id="@+id/layout_gcash_items_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
