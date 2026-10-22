@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚙️ Receipt Designer"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="12dp"
+            android:text="Customize header, footer, and styling for 58mm thermal printers."
+            android:textColor="@color/colorTextMuted"
+            android:textSize="12sp" />
+
+        <!-- STORE INFORMATION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Store Name:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_store_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. MORPS POS"
+            android:inputType="textCapWords"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Subheader / Business Type:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_subheader"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Sari-Sari Store &amp; General Mdse."
+            android:inputType="textCapSentences"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address / Location:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_address"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Brgy. San Antonio • Pasig City"
+            android:inputType="textCapWords"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone / Contact # (Optional):"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_contact"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Phone: 0917-123-4567"
+            android:inputType="phone"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Receipt Title:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_receipt_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. ORDER RECEIPT or SALES INVOICE"
+            android:inputType="textCapCharacters"
+            android:textSize="13sp" />
+
+        <!-- STYLE & DIVIDERS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Header Font Size:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup_header_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_header_big"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Large (Double Height)"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/radio_header_normal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Normal"
+                android:textSize="12sp" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Divider Style:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_divider_double"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Double (===)"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/radio_divider_dash"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dashes (---)"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:id="@+id/radio_divider_star"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Stars (***)"
+                android:textSize="12sp" />
+        </RadioGroup>
+
+        <!-- FOOTER & GREETINGS -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Footer Greeting 1:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_footer_1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Thank You for Your Purchase!"
+            android:inputType="textCapSentences"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Footer Greeting 2:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_footer_2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. Please Come Again!"
+            android:inputType="textCapSentences"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Store Policy / Note:"
+            android:textColor="@color/colorTextDark"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_design_policy"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edittext_border"
+            android:hint="e.g. No Return, No Exchange"
+            android:inputType="textCapSentences"
+            android:textSize="13sp" />
+
+        <!-- TOGGLES -->
+        <CheckBox
+            android:id="@+id/check_design_show_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Show Date &amp; Time"
+            android:textSize="12sp" />
+
+        <CheckBox
+            android:id="@+id/check_design_show_receipt_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Show Receipt #"
+            android:textSize="12sp" />
+
+        <!-- LIVE MONOSPACE 58MM PREVIEW -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="4dp"
+            android:text="👁️ Live 58mm Paper Preview:"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_design_live_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/receipt_paper_background"
+            android:fontFamily="monospace"
+            android:padding="12dp"
+            android:text="[Receipt Preview]"
+            android:textColor="#111111"
+            android:textSize="11sp" />
+
+        <!-- ACTION BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_reset_receipt_design"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_chip"
+                android:text="Reset"
+                android:textColor="@color/colorDanger"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btn_save_receipt_design"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1.6"
+                android:background="@drawable/button_primary"
+                android:text="💾 Save Design"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_cancel_receipt_design"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginTop="6dp"
+            android:background="@android:color/transparent"
+            android:text="Cancel"
+            android:textColor="@color/colorTextMuted"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+</ScrollView>
