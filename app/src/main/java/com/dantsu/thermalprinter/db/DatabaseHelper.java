@@ -13,7 +13,9 @@ import com.dantsu.thermalprinter.model.SaleTransaction;
 import com.dantsu.thermalprinter.model.SaleTransactionItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -442,39 +444,103 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<Product> getAllProducts(String searchQuery, String categoryFilter) {
-        return getAllProducts(searchQuery, categoryFilter, "ALL");
+        return getAllProducts(searchQuery, categoryFilter, "ALL", "NAME_ASC");
     }
 
     public List<Product> getAllProducts(String searchQuery, String categoryFilter, String stockFilter) {
+        return getAllProducts(searchQuery, categoryFilter, stockFilter, "NAME_ASC");
+    }
+
+    public List<Product> getAllProducts(String searchQuery, String categoryFilter, String stockFilter, String sortBy) {
         List<Product> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        StringBuilder selection = new StringBuilder();
+        boolean isBestSellersCategory = categoryFilter != null && (categoryFilter.contains("Best Sellers") || categoryFilter.equalsIgnoreCase("BEST_SELLERS"));
+        boolean isSortBestSellers = "BEST_SELLER".equalsIgnoreCase(sortBy) || isBestSellersCategory;
+
+        StringBuilder sql = new StringBuilder();
         List<String> args = new ArrayList<>();
 
+        sql.append("SELECT p.").append(COLUMN_ID).append(", ")
+           .append("p.").append(COLUMN_NAME).append(", ")
+           .append("p.").append(COLUMN_CATEGORY).append(", ")
+           .append("p.").append(COLUMN_PRICE).append(", ")
+           .append("p.").append(COLUMN_COST).append(", ")
+           .append("p.").append(COLUMN_STOCK).append(", ")
+           .append("p.").append(COLUMN_MIN_THRESHOLD).append(", ")
+           .append("COALESCE(SUM(si.").append(COLUMN_ITEM_QUANTITY).append("), 0) AS total_sold ")
+           .append("FROM ").append(TABLE_PRODUCTS).append(" p ")
+           .append("LEFT JOIN (")
+           .append("  SELECT si2.").append(COLUMN_ITEM_NAME).append(", si2.").append(COLUMN_ITEM_QUANTITY)
+           .append("  FROM ").append(TABLE_SALE_ITEMS).append(" si2 ")
+           .append("  JOIN ").append(TABLE_SALES).append(" s2 ON si2.").append(COLUMN_ITEM_SALE_ID).append(" = s2.").append(COLUMN_SALE_ID)
+           .append("  WHERE s2.").append(COLUMN_PAYMENT_MODE).append(" != 'VOID'")
+           .append(") si ON LOWER(p.").append(COLUMN_NAME).append(") = LOWER(si.").append(COLUMN_ITEM_NAME).append(") ");
+
+        StringBuilder whereClause = new StringBuilder();
         if (searchQuery != null && !searchQuery.trim().isEmpty()) {
-            selection.append(COLUMN_NAME).append(" LIKE ?");
+            whereClause.append("p.").append(COLUMN_NAME).append(" LIKE ? ");
             args.add("%" + searchQuery.trim() + "%");
         }
 
-        if (categoryFilter != null && !categoryFilter.equalsIgnoreCase("All") && !categoryFilter.trim().isEmpty()) {
-            if (selection.length() > 0) selection.append(" AND ");
-            selection.append(COLUMN_CATEGORY).append(" = ?");
+        if (categoryFilter != null && !categoryFilter.equalsIgnoreCase("All") && !isBestSellersCategory && !categoryFilter.trim().isEmpty()) {
+            if (whereClause.length() > 0) whereClause.append("AND ");
+            whereClause.append("p.").append(COLUMN_CATEGORY).append(" = ? ");
             args.add(categoryFilter.trim());
         }
 
         if ("LOW".equalsIgnoreCase(stockFilter)) {
-            if (selection.length() > 0) selection.append(" AND ");
-            selection.append(COLUMN_STOCK).append(" > 0 AND ").append(COLUMN_STOCK).append(" <= ").append(COLUMN_MIN_THRESHOLD);
+            if (whereClause.length() > 0) whereClause.append("AND ");
+            whereClause.append("p.").append(COLUMN_STOCK).append(" > 0 AND p.").append(COLUMN_STOCK).append(" <= p.").append(COLUMN_MIN_THRESHOLD).append(" ");
         } else if ("OUT".equalsIgnoreCase(stockFilter)) {
-            if (selection.length() > 0) selection.append(" AND ");
-            selection.append(COLUMN_STOCK).append(" <= 0");
+            if (whereClause.length() > 0) whereClause.append("AND ");
+            whereClause.append("p.").append(COLUMN_STOCK).append(" <= 0 ");
         }
 
-        String whereClause = selection.length() > 0 ? selection.toString() : null;
-        String[] whereArgs = args.isEmpty() ? null : args.toArray(new String[0]);
+        if (whereClause.length() > 0) {
+            sql.append("WHERE ").append(whereClause);
+        }
 
-        Cursor c = db.query(TABLE_PRODUCTS, null, whereClause, whereArgs, null, null, COLUMN_NAME + " ASC");
+        sql.append("GROUP BY p.").append(COLUMN_ID).append(" ");
+
+        if (isBestSellersCategory) {
+            Cursor countCheck = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_SALE_ITEMS, null);
+            boolean hasSales = false;
+            if (countCheck != null) {
+                if (countCheck.moveToFirst() && countCheck.getInt(0) > 0) {
+                    hasSales = true;
+                }
+                countCheck.close();
+            }
+            if (hasSales) {
+                sql.append("HAVING total_sold > 0 ");
+            }
+        }
+
+        String orderClause;
+        if (isSortBestSellers) {
+            orderClause = "total_sold DESC, p." + COLUMN_NAME + " ASC";
+        } else if ("NAME_DESC".equalsIgnoreCase(sortBy)) {
+            orderClause = "p." + COLUMN_NAME + " DESC";
+        } else if ("PRICE_ASC".equalsIgnoreCase(sortBy)) {
+            orderClause = "p." + COLUMN_PRICE + " ASC";
+        } else if ("PRICE_DESC".equalsIgnoreCase(sortBy)) {
+            orderClause = "p." + COLUMN_PRICE + " DESC";
+        } else if ("STOCK_DESC".equalsIgnoreCase(sortBy)) {
+            orderClause = "p." + COLUMN_STOCK + " DESC";
+        } else if ("STOCK_ASC".equalsIgnoreCase(sortBy)) {
+            orderClause = "p." + COLUMN_STOCK + " ASC";
+        } else {
+            orderClause = "p." + COLUMN_NAME + " ASC";
+        }
+
+        sql.append("ORDER BY ").append(orderClause);
+
+        if (isBestSellersCategory) {
+            sql.append(" LIMIT 25");
+        }
+
+        Cursor c = db.rawQuery(sql.toString(), args.isEmpty() ? null : args.toArray(new String[0]));
         if (c != null && c.moveToFirst()) {
             do {
                 list.add(cursorToProduct(c));
@@ -487,6 +553,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<String> getCategories() {
         List<String> list = new ArrayList<>();
         list.add("All");
+        list.add("🔥 Best Sellers");
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT DISTINCT " + COLUMN_CATEGORY + " FROM " + TABLE_PRODUCTS + " ORDER BY " + COLUMN_CATEGORY + " ASC", null);
         if (c != null && c.moveToFirst()) {
@@ -499,6 +566,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             c.close();
         }
         return list;
+    }
+
+    public Map<String, Integer> getCategoryCounts() {
+        Map<String, Integer> counts = new HashMap<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // 1. Total products
+        Cursor cAll = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_PRODUCTS, null);
+        int totalProducts = 0;
+        if (cAll != null) {
+            if (cAll.moveToFirst()) {
+                totalProducts = cAll.getInt(0);
+            }
+            cAll.close();
+        }
+        counts.put("All", totalProducts);
+
+        // 2. Best sellers count
+        Cursor cBest = db.rawQuery("SELECT COUNT(DISTINCT si." + COLUMN_ITEM_NAME + ") FROM " + TABLE_SALE_ITEMS + " si " +
+                "JOIN " + TABLE_SALES + " s ON si." + COLUMN_ITEM_SALE_ID + " = s." + COLUMN_SALE_ID + " " +
+                "WHERE s." + COLUMN_PAYMENT_MODE + " != 'VOID'", null);
+        int bestCount = 0;
+        if (cBest != null) {
+            if (cBest.moveToFirst()) {
+                bestCount = cBest.getInt(0);
+            }
+            cBest.close();
+        }
+        counts.put("🔥 Best Sellers", bestCount > 0 ? Math.min(bestCount, 25) : Math.min(10, totalProducts));
+
+        // 3. Category counts
+        Cursor cCat = db.rawQuery("SELECT " + COLUMN_CATEGORY + ", COUNT(*) FROM " + TABLE_PRODUCTS + " GROUP BY " + COLUMN_CATEGORY, null);
+        if (cCat != null) {
+            if (cCat.moveToFirst()) {
+                do {
+                    String cat = cCat.getString(0);
+                    int cnt = cCat.getInt(1);
+                    if (cat != null && !cat.trim().isEmpty()) {
+                        counts.put(cat, cnt);
+                    }
+                } while (cCat.moveToNext());
+            }
+            cCat.close();
+        }
+
+        return counts;
     }
 
     public int getLowStockCount() {

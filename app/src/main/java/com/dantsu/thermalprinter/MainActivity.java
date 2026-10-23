@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,9 +25,15 @@ import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.media.AudioManager;
 import android.media.ExifInterface;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -99,10 +106,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import android.view.inputmethod.InputMethodManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static class CartItem {
+    public static class CartItem implements java.io.Serializable {
+        private static final long serialVersionUID = 1L;
         private final long productId;
         private final String name;
         private final double unitPrice;
@@ -183,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
         public boolean enablePinSecurity = false;
         public String securityPin = "1234";
         public String updateSourceUrl = "https://api.github.com/repos/cmorpe7-ui/MorpsPOS/releases/latest";
+        public boolean enableSoundFeedback = true;
+        public boolean enableHapticFeedback = true;
+        public boolean enableDarkMode = false;
 
         public void load(Context context) {
             SharedPreferences prefs = context.getSharedPreferences("MorpsPOSPrefs", Context.MODE_PRIVATE);
@@ -211,6 +224,9 @@ public class MainActivity extends AppCompatActivity {
             enablePinSecurity = prefs.getBoolean("enablePinSecurity", false);
             securityPin = prefs.getString("securityPin", "1234");
             updateSourceUrl = prefs.getString("updateSourceUrl", "https://api.github.com/repos/cmorpe7-ui/MorpsPOS/releases/latest");
+            enableSoundFeedback = prefs.getBoolean("enableSoundFeedback", true);
+            enableHapticFeedback = prefs.getBoolean("enableHapticFeedback", true);
+            enableDarkMode = prefs.getBoolean("enableDarkMode", false);
         }
 
         public void save(Context context) {
@@ -240,6 +256,9 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean("enablePinSecurity", enablePinSecurity);
             editor.putString("securityPin", securityPin);
             editor.putString("updateSourceUrl", updateSourceUrl);
+            editor.putBoolean("enableSoundFeedback", enableSoundFeedback);
+            editor.putBoolean("enableHapticFeedback", enableHapticFeedback);
+            editor.putBoolean("enableDarkMode", enableDarkMode);
             editor.apply();
         }
 
@@ -269,6 +288,9 @@ public class MainActivity extends AppCompatActivity {
             enablePinSecurity = false;
             securityPin = "1234";
             updateSourceUrl = "https://api.github.com/repos/cmorpe7-ui/MorpsPOS/releases/latest";
+            enableSoundFeedback = true;
+            enableHapticFeedback = true;
+            enableDarkMode = false;
         }
 
         public boolean hasGcashQrImage(Context context) {
@@ -355,10 +377,14 @@ public class MainActivity extends AppCompatActivity {
     private int currentTab = TAB_POS;
 
     // Views - Header & Navigation
+    private LinearLayout cardHeaderStatus;
     private TextView textMainTitle;
     private TextView textMainSubtitle;
     private TextView textPrinterName;
     private Button buttonBrowsePrinter;
+    private Button btnToggleDarkMode;
+    private ToneGenerator toneGenerator;
+    private Vibrator vibrator;
     private Button tabPos;
     private Button tabInventory;
     private Button tabSales;
@@ -392,8 +418,17 @@ public class MainActivity extends AppCompatActivity {
     private String selectedGcashFilterType = "ALL";
 
     // Views - POS Tab
+    private LinearLayout cardPosCatalog;
+    private LinearLayout cardPosCart;
     private TextView textPosLowStockAlert;
     private EditText editPosSearch;
+    private Button btnPosSearchClear;
+    private Button btnPosSort;
+    private TextView textPosCatalogCount;
+    private Button btnPosViewGrid;
+    private Button btnPosViewList;
+    private boolean isPosGridView = true;
+    private String posSortOrder = "NAME_ASC";
     private LinearLayout layoutPosCategories;
     private LinearLayout layoutPosProductsContainer;
     private LinearLayout layoutCartItems;
@@ -471,12 +506,37 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Load settings early to apply dark mode / night shift theme
+        receiptDesign.load(this);
+        if (receiptDesign.enableDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Restore cart state across configuration changes and theme toggles
+        if (savedInstanceState != null) {
+            try {
+                @SuppressWarnings("unchecked")
+                ArrayList<CartItem> restoredCart = (ArrayList<CartItem>) savedInstanceState.getSerializable("saved_cart_items");
+                if (restoredCart != null) {
+                    cartItems.clear();
+                    cartItems.addAll(restoredCart);
+                }
+                @SuppressWarnings("unchecked")
+                ArrayList<CartItem> restoredParked = (ArrayList<CartItem>) savedInstanceState.getSerializable("saved_parked_items");
+                if (restoredParked != null) {
+                    parkedCartItems.clear();
+                    parkedCartItems.addAll(restoredParked);
+                }
+            } catch (Exception ignored) {}
+        }
+
         dbHelper = DatabaseHelper.getInstance(this);
         dbHelper.ensureDefaultProductsSeeded();
-        receiptDesign.load(this);
 
         // Keep receipt numbers aligned with previous sales
         try {
@@ -485,6 +545,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ignored) {}
 
         initViews();
+        applyOrientationLayout();
         applyStoreDesignToUI();
         setupTabs();
         setupPosCatalog();
@@ -500,11 +561,110 @@ public class MainActivity extends AppCompatActivity {
         refreshAllData();
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("saved_cart_items", new ArrayList<>(cartItems));
+        outState.putSerializable("saved_parked_items", new ArrayList<>(parkedCartItems));
+    }
+
+    private void initFeedbackManagers() {
+        try {
+            if (toneGenerator == null) {
+                toneGenerator = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 80);
+            }
+        } catch (Exception e) {
+            Log.w("MorpsPOS", "Could not init ToneGenerator: " + e.getMessage());
+        }
+        try {
+            if (vibrator == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    VibratorManager vm = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                    if (vm != null) vibrator = vm.getDefaultVibrator();
+                }
+                if (vibrator == null) {
+                    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                }
+            }
+        } catch (Exception e) {
+            Log.w("MorpsPOS", "Could not init Vibrator: " + e.getMessage());
+        }
+    }
+
+    private void playPosBeep(boolean isCheckoutComplete) {
+        if (!receiptDesign.enableSoundFeedback) return;
+        try {
+            if (toneGenerator == null) {
+                toneGenerator = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 80);
+            }
+            if (isCheckoutComplete) {
+                toneGenerator.startTone(ToneGenerator.TONE_PROP_ACK, 250);
+            } else {
+                toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 70);
+            }
+        } catch (Exception e) {
+            Log.w("MorpsPOS", "Error playing tone: " + e.getMessage());
+        }
+    }
+
+    private void playPosVibration(boolean isCheckoutComplete) {
+        if (!receiptDesign.enableHapticFeedback) return;
+        try {
+            if (vibrator == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    VibratorManager vm = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                    if (vm != null) vibrator = vm.getDefaultVibrator();
+                }
+                if (vibrator == null) {
+                    vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                }
+            }
+            if (vibrator != null && vibrator.hasVibrator()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (isCheckoutComplete) {
+                        vibrator.vibrate(VibrationEffect.createWaveform(new long[]{0, 50, 70, 110}, -1));
+                    } else {
+                        vibrator.vibrate(VibrationEffect.createOneShot(25, VibrationEffect.DEFAULT_AMPLITUDE));
+                    }
+                } else {
+                    if (isCheckoutComplete) {
+                        vibrator.vibrate(new long[]{0, 50, 70, 110}, -1);
+                    } else {
+                        vibrator.vibrate(25);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w("MorpsPOS", "Error vibrating: " + e.getMessage());
+        }
+    }
+
+    private void triggerRegisterFeedback(boolean isCheckoutComplete) {
+        playPosBeep(isCheckoutComplete);
+        playPosVibration(isCheckoutComplete);
+    }
+
+    private void toggleDarkMode() {
+        boolean newMode = !receiptDesign.enableDarkMode;
+        receiptDesign.enableDarkMode = newMode;
+        receiptDesign.save(this);
+        triggerRegisterFeedback(false);
+        Toast.makeText(this, newMode ? "🌙 Night Shift Theme Activated" : "☀️ Light Theme Activated", Toast.LENGTH_SHORT).show();
+        AppCompatDelegate.setDefaultNightMode(newMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+    }
+
     private void initViews() {
+        cardHeaderStatus = findViewById(R.id.card_header_status);
         textMainTitle = findViewById(R.id.text_main_title);
         textMainSubtitle = findViewById(R.id.text_main_subtitle);
         textPrinterName = findViewById(R.id.text_printer_name);
         buttonBrowsePrinter = findViewById(R.id.button_bluetooth_browse);
+        btnToggleDarkMode = findViewById(R.id.btn_toggle_dark_mode);
+        if (btnToggleDarkMode != null) {
+            btnToggleDarkMode.setText(receiptDesign.enableDarkMode ? "☀️" : "🌙");
+            btnToggleDarkMode.setOnClickListener(v -> toggleDarkMode());
+        }
+        initFeedbackManagers();
 
         tabPos = findViewById(R.id.tab_pos);
         tabInventory = findViewById(R.id.tab_inventory);
@@ -541,8 +701,15 @@ public class MainActivity extends AppCompatActivity {
         layoutGcashItemsContainer = findViewById(R.id.layout_gcash_items_container);
 
         // POS Elements
+        cardPosCatalog = findViewById(R.id.card_pos_catalog);
+        cardPosCart = findViewById(R.id.card_pos_cart);
         textPosLowStockAlert = findViewById(R.id.text_pos_low_stock_alert);
         editPosSearch = findViewById(R.id.edit_pos_search);
+        btnPosSearchClear = findViewById(R.id.btn_pos_search_clear);
+        btnPosSort = findViewById(R.id.btn_pos_sort);
+        textPosCatalogCount = findViewById(R.id.text_pos_catalog_count);
+        btnPosViewGrid = findViewById(R.id.btn_pos_view_grid);
+        btnPosViewList = findViewById(R.id.btn_pos_view_list);
         layoutPosCategories = findViewById(R.id.layout_pos_categories);
         layoutPosProductsContainer = findViewById(R.id.layout_pos_products_container);
         layoutCartItems = findViewById(R.id.layout_cart_items);
@@ -673,6 +840,9 @@ public class MainActivity extends AppCompatActivity {
             String sub = receiptDesign.subheader.isEmpty() ? "Sari-Sari Store POS" : receiptDesign.subheader;
             textMainSubtitle.setText(sub + " • 58mm Thermal");
         }
+        if (btnToggleDarkMode != null) {
+            btnToggleDarkMode.setText(receiptDesign.enableDarkMode ? "☀️" : "🌙");
+        }
         applyPaymentMethodVisibility();
     }
 
@@ -779,26 +949,262 @@ public class MainActivity extends AppCompatActivity {
         renderGcash();
     }
 
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (layoutPosView != null) {
+            layoutPosView.post(() -> {
+                applyOrientationLayout(newConfig);
+                renderPosCategories();
+                renderPosProducts();
+                updateCartDisplay();
+            });
+        } else {
+            applyOrientationLayout(newConfig);
+            renderPosCategories();
+            renderPosProducts();
+            updateCartDisplay();
+        }
+    }
+
+    private void applyOrientationLayout() {
+        applyOrientationLayout(getResources().getConfiguration());
+    }
+
+    private void applyOrientationLayout(Configuration config) {
+        boolean isLandscape = config.orientation == Configuration.ORIENTATION_LANDSCAPE;
+        float density = getResources().getDisplayMetrics().density;
+        int screenWidthPx = getResources().getDisplayMetrics().widthPixels;
+        int screenHeightPx = getResources().getDisplayMetrics().heightPixels;
+
+        // Ensure screenWidthPx reflects true landscape width (larger dimension)
+        if (isLandscape && screenWidthPx < screenHeightPx) {
+            int temp = screenWidthPx;
+            screenWidthPx = screenHeightPx;
+            screenHeightPx = temp;
+        } else if (!isLandscape && screenWidthPx > screenHeightPx) {
+            int temp = screenWidthPx;
+            screenWidthPx = screenHeightPx;
+            screenHeightPx = temp;
+        }
+
+        // Adjust Header compact mode in landscape to preserve vertical screen space
+        if (cardHeaderStatus != null) {
+            if (isLandscape) {
+                cardHeaderStatus.setPadding((int) (12 * density), (int) (6 * density), (int) (12 * density), (int) (6 * density));
+                if (textMainSubtitle != null) textMainSubtitle.setVisibility(View.GONE);
+            } else {
+                cardHeaderStatus.setPadding((int) (14 * density), (int) (14 * density), (int) (14 * density), (int) (14 * density));
+                if (textMainSubtitle != null) textMainSubtitle.setVisibility(View.VISIBLE);
+            }
+        }
+
+        if (cardPosCatalog != null && cardPosCart != null && layoutPosView != null) {
+            if (isLandscape) {
+                // Split-screen: Left is Catalog, Right is Cart
+                layoutPosView.setOrientation(LinearLayout.HORIZONTAL);
+                layoutPosView.setBaselineAligned(false);
+                layoutPosView.setGravity(Gravity.TOP);
+
+                // Parent padding is 16dp on each side (total 32dp)
+                int totalAvailableWidth = screenWidthPx - (int) (32 * density);
+                int gap = (int) (12 * density);
+                int remainingWidth = Math.max(320, totalAvailableWidth - gap);
+                int catalogWidth = (int) (remainingWidth * 0.55f);
+                int cartWidth = remainingWidth - catalogWidth;
+
+                LinearLayout.LayoutParams catalogParams = new LinearLayout.LayoutParams(
+                        catalogWidth,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                catalogParams.setMargins(0, (int) (8 * density), gap, 0);
+                cardPosCatalog.setLayoutParams(catalogParams);
+
+                LinearLayout.LayoutParams cartParams = new LinearLayout.LayoutParams(
+                        cartWidth,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                cartParams.setMargins(0, (int) (8 * density), 0, 0);
+                cardPosCart.setLayoutParams(cartParams);
+            } else {
+                // Portrait: Stacked
+                layoutPosView.setOrientation(LinearLayout.VERTICAL);
+
+                LinearLayout.LayoutParams catalogParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                catalogParams.setMargins(0, (int) (12 * density), 0, 0);
+                cardPosCatalog.setLayoutParams(catalogParams);
+
+                LinearLayout.LayoutParams cartParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                cartParams.setMargins(0, (int) (12 * density), 0, 0);
+                cardPosCart.setLayoutParams(cartParams);
+            }
+
+            cardPosCatalog.requestLayout();
+            cardPosCart.requestLayout();
+            layoutPosView.requestLayout();
+        }
+    }
+
+    private int getPosGridColumnCount() {
+        if (!isPosGridView) return 1;
+        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
+        boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (isLandscape) {
+            return screenWidthDp >= 840 ? 3 : 2;
+        }
+        return screenWidthDp >= 600 ? 3 : 2;
+    }
+
     /*==============================================================================================
     ======================================POS CATALOG SECTION=======================================
     ==============================================================================================*/
 
     private void setupPosCatalog() {
+        SharedPreferences prefs = getSharedPreferences("morps_pos_prefs", MODE_PRIVATE);
+        isPosGridView = prefs.getBoolean("pref_pos_grid_view", true);
+        posSortOrder = prefs.getString("pref_pos_sort", "NAME_ASC");
+
         editPosSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (btnPosSearchClear != null) {
+                    btnPosSearchClear.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
+                }
                 renderPosProducts();
             }
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        if (btnPosSearchClear != null) {
+            btnPosSearchClear.setOnClickListener(v -> {
+                editPosSearch.setText("");
+                editPosSearch.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(editPosSearch.getWindowToken(), 0);
+                }
+            });
+        }
+
+        if (btnPosSort != null) {
+            btnPosSort.setOnClickListener(v -> showSortDialog());
+            updateSortButtonLabel();
+        }
+
+        if (btnPosViewGrid != null) {
+            btnPosViewGrid.setOnClickListener(v -> setPosViewMode(true));
+        }
+
+        if (btnPosViewList != null) {
+            btnPosViewList.setOnClickListener(v -> setPosViewMode(false));
+        }
+
+        updatePosViewToggleButtons();
+    }
+
+    private void setPosViewMode(boolean grid) {
+        if (this.isPosGridView == grid) return;
+        this.isPosGridView = grid;
+        getSharedPreferences("morps_pos_prefs", MODE_PRIVATE)
+                .edit()
+                .putBoolean("pref_pos_grid_view", grid)
+                .apply();
+        updatePosViewToggleButtons();
+        renderPosProducts();
+    }
+
+    private void updatePosViewToggleButtons() {
+        if (btnPosViewGrid == null || btnPosViewList == null) return;
+        if (isPosGridView) {
+            btnPosViewGrid.setBackgroundResource(R.drawable.tab_pill_active);
+            btnPosViewGrid.setTextColor(ContextCompat.getColor(this, R.color.colorOnPrimary));
+            btnPosViewList.setBackgroundResource(R.drawable.tab_pill_inactive);
+            btnPosViewList.setTextColor(ContextCompat.getColor(this, R.color.colorTextDark));
+        } else {
+            btnPosViewGrid.setBackgroundResource(R.drawable.tab_pill_inactive);
+            btnPosViewGrid.setTextColor(ContextCompat.getColor(this, R.color.colorTextDark));
+            btnPosViewList.setBackgroundResource(R.drawable.tab_pill_active);
+            btnPosViewList.setTextColor(ContextCompat.getColor(this, R.color.colorOnPrimary));
+        }
+    }
+
+    private void updateSortButtonLabel() {
+        if (btnPosSort == null) return;
+        String label = "Sort: A-Z ▾";
+        if ("NAME_DESC".equalsIgnoreCase(posSortOrder)) {
+            label = "Sort: Z-A ▾";
+        } else if ("BEST_SELLER".equalsIgnoreCase(posSortOrder)) {
+            label = "Sort: 🔥 Top ▾";
+        } else if ("PRICE_ASC".equalsIgnoreCase(posSortOrder)) {
+            label = "Sort: ₱ Low ▾";
+        } else if ("PRICE_DESC".equalsIgnoreCase(posSortOrder)) {
+            label = "Sort: ₱ High ▾";
+        } else if ("STOCK_DESC".equalsIgnoreCase(posSortOrder)) {
+            label = "Sort: 📦 Stock ▾";
+        } else if ("STOCK_ASC".equalsIgnoreCase(posSortOrder)) {
+            label = "Sort: ⚠️ Low Stk ▾";
+        }
+        btnPosSort.setText(label);
+    }
+
+    private void showSortDialog() {
+        final String[] options = {
+            "🔤 Name (A → Z)",
+            "🔤 Name (Z → A)",
+            "🔥 Best Sellers (Most Sold)",
+            "💲 Price (Low → High)",
+            "💲 Price (High → Low)",
+            "📦 Stock (Highest First)",
+            "⚠️ Stock (Lowest First)"
+        };
+
+        final String[] orderCodes = {
+            "NAME_ASC",
+            "NAME_DESC",
+            "BEST_SELLER",
+            "PRICE_ASC",
+            "PRICE_DESC",
+            "STOCK_DESC",
+            "STOCK_ASC"
+        };
+
+        int selectedIndex = 0;
+        for (int i = 0; i < orderCodes.length; i++) {
+            if (orderCodes[i].equalsIgnoreCase(posSortOrder)) {
+                selectedIndex = i;
+                break;
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sort Products");
+        builder.setSingleChoiceItems(options, selectedIndex, (dialog, which) -> {
+            posSortOrder = orderCodes[which];
+            getSharedPreferences("morps_pos_prefs", MODE_PRIVATE)
+                    .edit()
+                    .putString("pref_pos_sort", posSortOrder)
+                    .apply();
+            updateSortButtonLabel();
+            renderPosProducts();
+            dialog.dismiss();
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
     }
 
     private void renderPosCategories() {
         layoutPosCategories.removeAllViews();
         List<String> categories = dbHelper.getCategories();
+        Map<String, Integer> categoryCounts = dbHelper.getCategoryCounts();
         float density = getResources().getDisplayMetrics().density;
         int heightInPx = (int) (48 * density);
         int marginEndInPx = (int) (8 * density);
@@ -806,7 +1212,8 @@ public class MainActivity extends AppCompatActivity {
 
         for (String cat : categories) {
             Button btnCat = new Button(this);
-            btnCat.setText(cat);
+            int count = categoryCounts.containsKey(cat) ? categoryCounts.get(cat) : 0;
+            btnCat.setText(cat + " (" + count + ")");
             btnCat.setTextSize(12);
             btnCat.setAllCaps(false);
             btnCat.setPadding(padH, 0, padH, 0);
@@ -843,7 +1250,11 @@ public class MainActivity extends AppCompatActivity {
     private void renderPosProducts() {
         layoutPosProductsContainer.removeAllViews();
         String search = editPosSearch.getText().toString().trim();
-        List<Product> products = dbHelper.getAllProducts(search, selectedPosCategory);
+        List<Product> products = dbHelper.getAllProducts(search, selectedPosCategory, "ALL", posSortOrder);
+
+        if (textPosCatalogCount != null) {
+            textPosCatalogCount.setText(products.size() + (products.size() == 1 ? " item" : " items"));
+        }
 
         int lowStockCount = dbHelper.getLowStockCount();
         if (lowStockCount > 0) {
@@ -856,44 +1267,105 @@ public class MainActivity extends AppCompatActivity {
 
         if (products.isEmpty()) {
             TextView emptyTxt = new TextView(this);
-            emptyTxt.setText("No products found. Add new items in the Inventory tab.");
+            if (!search.isEmpty()) {
+                emptyTxt.setText("No products matching \"" + search + "\".\nTap ✕ on the search bar to clear.");
+            } else if (selectedPosCategory != null && selectedPosCategory.contains("Best Sellers")) {
+                emptyTxt.setText("No sales recorded yet to determine best sellers.\nComplete a checkout to see top items here!");
+            } else {
+                emptyTxt.setText("No products found. Add new items in the Inventory tab.");
+            }
             emptyTxt.setTextColor(ContextCompat.getColor(this, R.color.colorTextMuted));
             emptyTxt.setTextSize(13);
             emptyTxt.setGravity(Gravity.CENTER);
-            emptyTxt.setPadding(0, 24, 0, 24);
+            emptyTxt.setPadding(0, 36, 0, 36);
             layoutPosProductsContainer.addView(emptyTxt);
             return;
         }
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (Product p : products) {
-            View itemView = inflater.inflate(R.layout.item_pos_product, layoutPosProductsContainer, false);
 
-            TextView textName = itemView.findViewById(R.id.text_pos_product_name);
-            TextView textCat = itemView.findViewById(R.id.text_pos_product_category);
-            TextView textStock = itemView.findViewById(R.id.text_pos_stock_indicator);
-            TextView textPrice = itemView.findViewById(R.id.text_pos_product_price);
-            Button btnAdd = itemView.findViewById(R.id.btn_pos_add);
+        if (isPosGridView) {
+            int numColumns = getPosGridColumnCount();
+            LinearLayout currentRow = null;
+            float density = getResources().getDisplayMetrics().density;
+            int marginB = (int) (4 * density);
+            int marginSide = (int) (4 * density);
 
-            textName.setText(p.getName());
-            textCat.setText(p.getCategory());
-            textPrice.setText(String.format(Locale.US, "₱%.2f", p.getPrice()));
+            for (int i = 0; i < products.size(); i++) {
+                Product p = products.get(i);
+                if (i % numColumns == 0) {
+                    currentRow = new LinearLayout(this);
+                    currentRow.setOrientation(LinearLayout.HORIZONTAL);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    lp.setMargins(0, 0, 0, marginB);
+                    currentRow.setLayoutParams(lp);
+                    layoutPosProductsContainer.addView(currentRow);
+                }
 
-            int inCart = getCartQuantity(p.getId(), p.getName());
-            int remainingStock = Math.max(0, p.getStock() - inCart);
+                View itemView = inflater.inflate(R.layout.item_pos_product_grid, currentRow, false);
+                bindProductItemView(itemView, p, true);
+                currentRow.addView(itemView);
+            }
 
+            // Fill remaining slots in last row with invisible spacers to maintain consistent tile widths
+            int remainder = products.size() % numColumns;
+            if (remainder != 0 && currentRow != null) {
+                int missing = numColumns - remainder;
+                for (int k = 0; k < missing; k++) {
+                    View spacer = new View(this);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1.0f
+                    );
+                    lp.setMargins(marginSide, 0, marginSide, 0);
+                    spacer.setLayoutParams(lp);
+                    currentRow.addView(spacer);
+                }
+            }
+        } else {
+            for (Product p : products) {
+                View itemView = inflater.inflate(R.layout.item_pos_product, layoutPosProductsContainer, false);
+                bindProductItemView(itemView, p, false);
+                layoutPosProductsContainer.addView(itemView);
+            }
+        }
+    }
+
+    private void bindProductItemView(View itemView, Product p, boolean isGrid) {
+        TextView textName = itemView.findViewById(R.id.text_pos_product_name);
+        TextView textCat = itemView.findViewById(R.id.text_pos_product_category);
+        TextView textStock = itemView.findViewById(R.id.text_pos_stock_indicator);
+        TextView textPrice = itemView.findViewById(R.id.text_pos_product_price);
+        Button btnAdd = itemView.findViewById(R.id.btn_pos_add);
+
+        if (textName != null) textName.setText(p.getName());
+        if (textCat != null) textCat.setText(p.getCategory());
+        if (textPrice != null) textPrice.setText(String.format(Locale.US, "₱%.2f", p.getPrice()));
+
+        int inCart = getCartQuantity(p.getId(), p.getName());
+        int remainingStock = Math.max(0, p.getStock() - inCart);
+
+        if (textStock != null) {
             if (p.isOutOfStock()) {
                 textStock.setText("Out of Stock");
                 textStock.setBackgroundResource(R.drawable.badge_red);
                 textStock.setTextColor(ContextCompat.getColor(this, R.color.colorBadgeRedText));
-                itemView.setAlpha(0.6f);
+                itemView.setAlpha(0.55f);
             } else if (remainingStock == 0) {
-                textStock.setText("All in Cart (" + p.getStock() + ")");
+                textStock.setText("In Cart (" + p.getStock() + ")");
                 textStock.setBackgroundResource(R.drawable.badge_orange);
                 textStock.setTextColor(ContextCompat.getColor(this, R.color.colorBadgeOrangeText));
                 itemView.setAlpha(0.75f);
             } else if (inCart > 0) {
-                textStock.setText("Stock: " + remainingStock + " left (" + inCart + " in cart)");
+                if (isGrid) {
+                    textStock.setText(remainingStock + " left (" + inCart + " in cart)");
+                } else {
+                    textStock.setText("Stock: " + remainingStock + " left (" + inCart + " in cart)");
+                }
                 textStock.setBackgroundResource(R.drawable.badge_green);
                 textStock.setTextColor(ContextCompat.getColor(this, R.color.colorBadgeGreenText));
                 itemView.setAlpha(1.0f);
@@ -908,25 +1380,25 @@ public class MainActivity extends AppCompatActivity {
                 textStock.setTextColor(ContextCompat.getColor(this, R.color.colorBadgeGreenText));
                 itemView.setAlpha(1.0f);
             }
+        }
 
-            View.OnClickListener addListener = v -> {
-                int currentDbStock = dbHelper.getProductStock(p.getId(), p.getName());
-                if (currentDbStock <= 0) {
-                    Toast.makeText(this, p.getName() + " is OUT OF STOCK!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                int currentInCart = getCartQuantity(p.getId(), p.getName());
-                if (currentInCart >= currentDbStock) {
-                    Toast.makeText(this, "Cannot add more! Only " + currentDbStock + " " + p.getName() + " in stock (all already in cart).", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                addItemToCart(p.getId(), p.getName(), p.getPrice());
-            };
+        View.OnClickListener addListener = v -> {
+            int currentDbStock = dbHelper.getProductStock(p.getId(), p.getName());
+            if (currentDbStock <= 0) {
+                Toast.makeText(this, p.getName() + " is OUT OF STOCK!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int currentInCart = getCartQuantity(p.getId(), p.getName());
+            if (currentInCart >= currentDbStock) {
+                Toast.makeText(this, "Cannot add more! Only " + currentDbStock + " " + p.getName() + " in stock (all already in cart).", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            addItemToCart(p.getId(), p.getName(), p.getPrice());
+        };
 
-            itemView.setOnClickListener(addListener);
+        itemView.setOnClickListener(addListener);
+        if (btnAdd != null) {
             btnAdd.setOnClickListener(addListener);
-
-            layoutPosProductsContainer.addView(itemView);
         }
     }
 
@@ -950,6 +1422,7 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
                 item.increment();
+                triggerRegisterFeedback(false);
                 updateCartDisplay();
                 return true;
             }
@@ -959,6 +1432,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         cartItems.add(new CartItem(productId, name, price, 1));
+        triggerRegisterFeedback(false);
         updateCartDisplay();
         return true;
     }
@@ -1084,6 +1558,7 @@ public class MainActivity extends AppCompatActivity {
         // Refresh dynamic inventory, catalog, and sales history
         refreshAllData();
 
+        triggerRegisterFeedback(true);
         Toast.makeText(this, "Sale recorded (" + receiptNo + ")! Inventory updated.", Toast.LENGTH_SHORT).show();
 
         if (receiptDesign.autoPrintOnCheckout && selectedBluetoothDevice != null) {
@@ -1209,6 +1684,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     item.increment();
+                    triggerRegisterFeedback(false);
                     updateCartDisplay();
                 });
 
@@ -3799,6 +4275,7 @@ public class MainActivity extends AppCompatActivity {
                     long id = dbHelper.addGcashTransaction(tx);
                     tx.setId(id);
 
+                    triggerRegisterFeedback(true);
                     Toast.makeText(this, "✅ " + (tx.isCashIn() ? "Cash-In" : "Cash-Out") + " recorded successfully!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
 
@@ -4748,6 +5225,30 @@ public class MainActivity extends AppCompatActivity {
             btnConfigUpdateUrl.setOnClickListener(v -> openConfigureUpdateUrlDialog());
         }
 
+        // Section: Tactile Feedback & Aesthetics
+        CheckBox checkEnableSound = dialogView.findViewById(R.id.check_enable_sound_feedback);
+        CheckBox checkEnableHaptic = dialogView.findViewById(R.id.check_enable_haptic_feedback);
+        CheckBox checkEnableDarkMode = dialogView.findViewById(R.id.check_enable_dark_mode);
+        Button btnTestAudioHaptic = dialogView.findViewById(R.id.btn_test_audio_haptic);
+
+        if (checkEnableSound != null) checkEnableSound.setChecked(receiptDesign.enableSoundFeedback);
+        if (checkEnableHaptic != null) checkEnableHaptic.setChecked(receiptDesign.enableHapticFeedback);
+        if (checkEnableDarkMode != null) checkEnableDarkMode.setChecked(receiptDesign.enableDarkMode);
+
+        if (btnTestAudioHaptic != null) {
+            btnTestAudioHaptic.setOnClickListener(v -> {
+                boolean prevSound = receiptDesign.enableSoundFeedback;
+                boolean prevHaptic = receiptDesign.enableHapticFeedback;
+                if (checkEnableSound != null) receiptDesign.enableSoundFeedback = checkEnableSound.isChecked();
+                if (checkEnableHaptic != null) receiptDesign.enableHapticFeedback = checkEnableHaptic.isChecked();
+                triggerRegisterFeedback(false);
+                v.postDelayed(() -> triggerRegisterFeedback(true), 250);
+                Toast.makeText(this, "🔔 Played Cash Register Tone & Subtle Vibration!", Toast.LENGTH_SHORT).show();
+                receiptDesign.enableSoundFeedback = prevSound;
+                receiptDesign.enableHapticFeedback = prevHaptic;
+            });
+        }
+
         // Pre-fill with current config
         editStoreName.setText(receiptDesign.storeName);
         editSubheader.setText(receiptDesign.subheader);
@@ -4988,8 +5489,19 @@ public class MainActivity extends AppCompatActivity {
                 receiptDesign.enablePinSecurity = checkEnablePin.isChecked();
             }
 
+            boolean oldDarkMode = receiptDesign.enableDarkMode;
+            if (checkEnableSound != null) receiptDesign.enableSoundFeedback = checkEnableSound.isChecked();
+            if (checkEnableHaptic != null) receiptDesign.enableHapticFeedback = checkEnableHaptic.isChecked();
+            if (checkEnableDarkMode != null) receiptDesign.enableDarkMode = checkEnableDarkMode.isChecked();
+
             receiptDesign.save(this);
             applyStoreDesignToUI();
+            if (btnToggleDarkMode != null) {
+                btnToggleDarkMode.setText(receiptDesign.enableDarkMode ? "☀️" : "🌙");
+            }
+            if (oldDarkMode != receiptDesign.enableDarkMode) {
+                AppCompatDelegate.setDefaultNightMode(receiptDesign.enableDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            }
             Toast.makeText(this, "Settings saved successfully! Main menu updated.", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
@@ -5019,6 +5531,9 @@ public class MainActivity extends AppCompatActivity {
             if (checkEnableGcashQr != null) checkEnableGcashQr.setChecked(false);
             if (radioGcashQrModeAlways != null) radioGcashQrModeAlways.setChecked(true);
             if (checkEnablePin != null) checkEnablePin.setChecked(false);
+            if (checkEnableSound != null) checkEnableSound.setChecked(true);
+            if (checkEnableHaptic != null) checkEnableHaptic.setChecked(true);
+            if (checkEnableDarkMode != null) checkEnableDarkMode.setChecked(false);
             updateLivePreview.run();
             Toast.makeText(this, "Settings reset to defaults", Toast.LENGTH_SHORT).show();
         });
@@ -6448,5 +6963,11 @@ public class MainActivity extends AppCompatActivity {
         try {
             unregisterReceiver(this.usbReceiver);
         } catch (Exception ignored) {}
+        if (toneGenerator != null) {
+            try {
+                toneGenerator.release();
+                toneGenerator = null;
+            } catch (Exception ignored) {}
+        }
     }
 }

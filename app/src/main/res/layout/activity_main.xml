@@ -15,6 +15,7 @@
 
         <!-- HEADER & PRINTER STATUS -->
         <LinearLayout
+            android:id="@+id/card_header_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/card_background"
@@ -51,6 +52,19 @@
                         android:textColor="@color/colorTextMuted"
                         android:textSize="12sp" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_toggle_dark_mode"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/button_tonal"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    android:padding="0dp"
+                    android:text="🌙"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/button_customize_receipt"
@@ -169,10 +183,13 @@
             android:id="@+id/layout_pos_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:gravity="top"
             android:orientation="vertical">
 
             <!-- PRODUCT CATALOG & SEARCH -->
             <LinearLayout
+                android:id="@+id/card_pos_catalog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -207,18 +224,116 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <!-- Search bar for POS -->
-                <EditText
-                    android:id="@+id/edit_pos_search"
+                <!-- Search bar for POS with 1-tap Clear Button -->
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:layout_marginTop="8dp">
+
+                    <EditText
+                        android:id="@+id/edit_pos_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/edittext_border"
+                        android:drawableStart="@android:drawable/ic_menu_search"
+                        android:drawablePadding="8dp"
+                        android:hint="Search item to sell..."
+                        android:inputType="text"
+                        android:paddingEnd="42dp"
+                        android:textSize="13sp" />
+
+                    <Button
+                        android:id="@+id/btn_pos_search_clear"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/button_tonal"
+                        android:minHeight="32dp"
+                        android:minWidth="32dp"
+                        android:padding="0dp"
+                        android:text="✕"
+                        android:textColor="@color/colorTextMuted"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <!-- Quick Controls Bar: Sort Selector, Count Indicator, and Grid/List View Toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:background="@drawable/edittext_border"
-                    android:drawableStart="@android:drawable/ic_menu_search"
-                    android:drawablePadding="8dp"
-                    android:hint="Search item to sell..."
-                    android:inputType="text"
-                    android:textSize="13sp" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Sort Button -->
+                    <Button
+                        android:id="@+id/btn_pos_sort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/button_chip"
+                        android:minHeight="36dp"
+                        android:minWidth="36dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="Sort: A-Z ▾"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <!-- Catalog Count Badge -->
+                    <TextView
+                        android:id="@+id/text_pos_catalog_count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="0 items"
+                        android:textColor="@color/colorTextMuted"
+                        android:textSize="11sp" />
+
+                    <!-- Grid vs List View Toggle -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/button_chip"
+                        android:orientation="horizontal"
+                        android:padding="2dp">
+
+                        <Button
+                            android:id="@+id/btn_pos_view_grid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/tab_pill_active"
+                            android:minHeight="32dp"
+                            android:minWidth="42dp"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:text="⊞ Grid"
+                            android:textColor="@color/colorOnPrimary"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btn_pos_view_list"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/tab_pill_inactive"
+                            android:minHeight="32dp"
+                            android:minWidth="42dp"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:text="☰ List"
+                            android:textColor="@color/colorTextDark"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <!-- Category filter chips horizontal container -->
                 <HorizontalScrollView
@@ -297,6 +412,7 @@
 
             <!-- CART / ORDER SUMMARY -->
             <LinearLayout
+                android:id="@+id/card_pos_cart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
